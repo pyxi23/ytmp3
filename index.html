@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #1e1e1e 0%, #2d2d30 100%);
+            color: #e8e8e8;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: rgba(42, 42, 46, 0.95);
+            backdrop-filter: blur(20px);
+            border-radius: 24px;
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3), 
+                        0 0 0 1px rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            background: linear-gradient(135deg, #ff6b6b, #4ecdc4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #a0a0a0;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #e8e8e8;
+            font-size: 14px;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #e8e8e8;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: #4ecdc4;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 0 3px rgba(78, 205, 196, 0.1);
+        }
+
+        .input-field::placeholder {
+            color: #a0a0a0;
+        }
+
+        .format-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .format-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #e8e8e8;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .format-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .format-btn.selected {
+            background: linear-gradient(135deg, #4ecdc4, #44a08d);
+            border-color: #4ecdc4;
+            color: white;
+        }
+
+        .quality-selector {
+            margin-bottom: 24px;
+        }
+
+        .quality-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .quality-btn {
+            padding: 8px 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            color: #e8e8e8;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .quality-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .quality-btn.selected {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+            border-color: #ff6b6b;
+            color: white;
+        }
+
+        .path-selector {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .path-input {
+            flex: 1;
+        }
+
+        .browse-btn {
+            padding: 12px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: #e8e8e8;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .browse-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .convert-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .convert-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+
+        .convert-btn:active {
+            transform: translateY(0);
+        }
+
+        .convert-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 16px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4ecdc4, #44a08d);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .status-message {
+            margin-top: 16px;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 14px;
+            display: none;
+        }
+
+        .status-success {
+            background: rgba(78, 205, 196, 0.1);
+            color: #4ecdc4;
+            border: 1px solid rgba(78, 205, 196, 0.2);
+        }
+
+        .status-error {
+            background: rgba(255, 107, 107, 0.1);
+            color: #ff6b6b;
+            border: 1px solid rgba(255, 107, 107, 0.2);
+        }
+
+        .file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>YouTube Converter</h1>
+            <p>Convert YouTube videos to MP3 or MP4</p>
+        </div>
+
+        <form id="converterForm">
+            <div class="form-group">
+                <label for="urlInput">YouTube URL</label>
+                <input 
+                    type="url" 
+                    id="urlInput" 
+                    class="input-field" 
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label>Output Format</label>
+                <div class="format-buttons">
+                    <button type="button" class="format-btn selected" data-format="mp3">
+                        🎵 MP3 Audio
+                    </button>
+                    <button type="button" class="format-btn" data-format="mp4">
+                        🎬 MP4 Video
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group quality-selector">
+                <label>Quality</label>
+                <div class="quality-options">
+                    <button type="button" class="quality-btn" data-quality="low">Low</button>
+                    <button type="button" class="quality-btn selected" data-quality="medium">Medium</button>
+                    <button type="button" class="quality-btn" data-quality="high">High</button>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="pathInput">Save Location</label>
+                <div class="path-selector">
+                    <input 
+                        type="text" 
+                        id="pathInput" 
+                        class="input-field path-input" 
+                        placeholder="Choose download folder..."
+                        readonly
+                    >
+                    <button type="button" class="browse-btn" id="browseBtn">Browse</button>
+                </div>
+            </div>
+
+            <button type="submit" class="convert-btn" id="convertBtn">
+                Start Conversion
+            </button>
+
+            <div class="progress-bar" id="progressBar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+
+            <div class="status-message" id="statusMessage"></div>
+        </form>
+
+        <input type="file" id="folderInput" class="file-input" webkitdirectory>
+    </div>
+
+    <script>
+        // State management
+        let selectedFormat = 'mp3';
+        let selectedQuality = 'medium';
+        let savePath = '';
+
+        // DOM elements
+        const formatBtns = document.querySelectorAll('.format-btn');
+        const qualityBtns = document.querySelectorAll('.quality-btn');
+        const browseBtn = document.getElementById('browseBtn');
+        const pathInput = document.getElementById('pathInput');
+        const folderInput = document.getElementById('folderInput');
+        const converterForm = document.getElementById('converterForm');
+        const convertBtn = document.getElementById('convertBtn');
+        const progressBar = document.getElementById('progressBar');
+        const progressFill = document.getElementById('progressFill');
+        const statusMessage = document.getElementById('statusMessage');
+        const urlInput = document.getElementById('urlInput');
+
+        // Format selection
+        formatBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                formatBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedFormat = btn.dataset.format;
+            });
+        });
+
+        // Quality selection
+        qualityBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                qualityBtns.forEach(b => b.classList.remove('selected'));
+                btn.classList.add('selected');
+                selectedQuality = btn.dataset.quality;
+            });
+        });
+
+        // Browse folder (simulated for web demo)
+        browseBtn.addEventListener('click', () => {
+            // In a real desktop app, this would open a folder picker
+            // For this demo, we'll simulate it
+            folderInput.click();
+        });
+
+        folderInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                // Get the path of the first file and extract directory
+                const firstFile = e.target.files[0];
+                const path = firstFile.webkitRelativePath.split('/')[0];
+                savePath = path;
+                pathInput.value = `Selected: ${path}`;
+            }
+        });
+
+        // Form submission
+        converterForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const url = urlInput.value.trim();
+            if (!url) {
+                showStatus('Please enter a YouTube URL', 'error');
+                return;
+            }
+
+            if (!isValidYouTubeUrl(url)) {
+                showStatus('Please enter a valid YouTube URL', 'error');
+                return;
+            }
+
+            if (!savePath) {
+                showStatus('Please select a save location', 'error');
+                return;
+            }
+
+            // Start conversion process
+            startConversion(url);
+        });
+
+        function isValidYouTubeUrl(url) {
+            const youtubeRegex = /^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\/.+/;
+            return youtubeRegex.test(url);
+        }
+
+        async function startConversion(url) {
+            // Disable form
+            convertBtn.disabled = true;
+            convertBtn.textContent = 'Converting...';
+            progressBar.style.display = 'block';
+            statusMessage.style.display = 'none';
+
+            try {
+                const response = await fetch('/api/convert', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        url: url,
+                        format: selectedFormat,
+                        quality: selectedQuality
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Server error: ${response.status}`);
+                }
+
+                const result = await response.json();
+                
+                if (result.success) {
+                    // Create download link
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = result.downloadUrl;
+                    downloadLink.download = result.filename;
+                    document.body.appendChild(downloadLink);
+                    downloadLink.click();
+                    document.body.removeChild(downloadLink);
+                    
+                    showStatus(`✅ Successfully converted to ${selectedFormat.toUpperCase()}! Download started.`, 'success');
+                } else {
+                    throw new Error(result.error || 'Conversion failed');
+                }
+            } catch (error) {
+                console.error('Conversion error:', error);
+                showStatus(`❌ Conversion failed: ${error.message}`, 'error');
+            } finally {
+                // Re-enable form
+                convertBtn.disabled = false;
+                convertBtn.textContent = 'Start Conversion';
+                progressBar.style.display = 'none';
+                progressFill.style.width = '0%';
+            }
+        }
+
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status-message status-${type}`;
+            statusMessage.style.display = 'block';
+        }
+
+        // Set default save path for demo
+        setTimeout(() => {
+            pathInput.value = 'Downloads folder (default)';
+            savePath = 'Downloads';
+        }, 1000);
+    </script>
+</body>
+</html>
