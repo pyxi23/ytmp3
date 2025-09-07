@@ -1,0 +1,15 @@
+{
+  "name": "youtube-converter",
+  "version": "1.0.0",
+  "description": "YouTube to MP3/MP4 converter",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev",
+    "build": "echo 'No build step needed'"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "engines": {
+    "node": ">=18.x"
+  }
+}
