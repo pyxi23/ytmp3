@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "functions": {
+    "api/convert.js": {
+      "maxDuration": 300
+    }
+  },
+  "builds": [
+    {
+      "src": "api/convert.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "installCommand": "npm install && pip install yt-dlp"
+}
